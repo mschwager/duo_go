@@ -5,8 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
-	// The parent directory is the duo_go package
-	".."
+	"github.com/mschwager/duo_go"
 )
 
 const IKEY = ""
