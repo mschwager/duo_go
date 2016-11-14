@@ -22,7 +22,7 @@ Configure your `ikey`, `skey`, `akey`, and `host`, in `duo_go_demo.go`.
 Then run the following command:
 
 ```
-$ go run duo_go_demo.go
+$ go run duo_go_demo/duo_go_demo.go
 ```
 
 # Testing

@@ -5,13 +5,15 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/mschwager/duo_go"
+	// The parent directory is the duo_go package
+	".."
 )
 
 const IKEY = ""
 const SKEY = ""
 const AKEY = ""
 const HOST = ""
+const RESPONSE_URL = "/response"
 
 const HTML_TEMPLATE = `
 <html>
@@ -47,7 +49,10 @@ var DUO_CONFIGURATION = &duo_go.Web{
 func handler(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 
-	sig_request, _ := duo_go.SignRequest(DUO_CONFIGURATION, username)
+	sig_request, err := duo_go.SignRequest(DUO_CONFIGURATION, username)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	page := struct {
 		Host       string
@@ -56,10 +61,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}{
 		Host:       HOST,
 		SigRequest: sig_request,
-		PostAction: "/response",
+		PostAction: RESPONSE_URL,
 	}
 
-	p, _ := template.New("example").Parse(HTML_TEMPLATE)
+	p, err := template.New("example").Parse(HTML_TEMPLATE)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	p.ExecuteTemplate(w, "example", page)
 }
@@ -69,7 +77,10 @@ func response(w http.ResponseWriter, r *http.Request) {
 
 	sig_response := r.FormValue("sig_response")
 
-	username, _ := duo_go.VerifyResponse(DUO_CONFIGURATION, sig_response)
+	username, err := duo_go.VerifyResponse(DUO_CONFIGURATION, sig_response)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	fmt.Fprintf(w, "Successfully authenticated as: "+username)
 }
@@ -77,6 +88,6 @@ func response(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Println("Listening on: http://localhost:8080/?username=example")
 	http.HandleFunc("/", handler)
-	http.HandleFunc("/response", response)
+	http.HandleFunc(RESPONSE_URL, response)
 	http.ListenAndServe(":8080", nil)
 }
