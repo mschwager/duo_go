@@ -4,4 +4,4 @@ before_install:
 script:
     - go test -v ./...
 after_success:
-    - $HOME/gopath/bin/goveralls -service=travis-ci -ignore=duo_go_demo.go
+    - $HOME/gopath/bin/goveralls -service=travis-ci -ignore=duo_go_demo/duo_go_demo.go
