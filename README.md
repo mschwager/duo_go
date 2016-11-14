@@ -13,7 +13,34 @@ $ go get github.com/mschwager/duo_go
 
 # Using
 
-TODO
+Here's a short snippet of code demonstrating the library:
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/mschwager/duo_go"
+)
+
+func main() {
+    duo_configuration := &duo_go.Web{
+        Ikey: "<ikey-here>",
+        Skey: "<skey-here>",
+        Akey: "<akey-here>",
+    }
+    sig_request, _ := duo_go.SignRequest(duo_configuration, "example_username")
+
+    fmt.Println("Signature request: " + sig_request)
+}
+```
+
+```
+$ go run example.go
+Signature request: TX|ZXh...|5ce...:APP|ZXh...|fc2...
+```
+
+For a more complete example, checkout the demo code.
 
 # Demo
 
