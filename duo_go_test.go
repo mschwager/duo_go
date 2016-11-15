@@ -46,7 +46,7 @@ func TestEmptyUsername(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, "")
 
-	if signature != "" || err.Error() != duo_go.ERR_USER {
+	if signature != "" || err.Error() != duo_go.ErrUser {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -60,7 +60,7 @@ func TestUsernameWithValueSeparator(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, "in|valid")
 
-	if signature != "" || err.Error() != duo_go.ERR_USER {
+	if signature != "" || err.Error() != duo_go.ErrUser {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -74,7 +74,7 @@ func TestInvalidIkey(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	if signature != "" || err.Error() != duo_go.ERR_IKEY {
+	if signature != "" || err.Error() != duo_go.ErrIKEY {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -88,7 +88,7 @@ func TestInvalidSkey(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	if signature != "" || err.Error() != duo_go.ERR_SKEY {
+	if signature != "" || err.Error() != duo_go.ErrSKEY {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -102,7 +102,7 @@ func TestInvalidAkey(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	if signature != "" || err.Error() != duo_go.ERR_AKEY {
+	if signature != "" || err.Error() != duo_go.ErrAKEY {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -116,14 +116,14 @@ func TestInvalidResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	valid_application_signature := parts[1]
 
-	invalid_response := strings.Join([]string{INVALID_RESPONSE, valid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	invalid_response := strings.Join([]string{INVALID_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(duo_configuration, invalid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -137,14 +137,14 @@ func TestExpiredResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	valid_application_signature := parts[1]
 
-	invalid_response := strings.Join([]string{EXPIRED_RESPONSE, valid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	invalid_response := strings.Join([]string{EXPIRED_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(duo_configuration, invalid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -158,10 +158,10 @@ func TestFutureResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	valid_application_signature := parts[1]
 
-	valid_response := strings.Join([]string{FUTURE_RESPONSE, valid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	valid_response := strings.Join([]string{FUTURE_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(duo_configuration, valid_response)
 
@@ -179,10 +179,10 @@ func TestFutureInvalidResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(invalid_duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	invalid_application_signature := parts[1]
 
-	invalid_response := strings.Join([]string{FUTURE_RESPONSE, invalid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	invalid_response := strings.Join([]string{FUTURE_RESPONSE, invalid_application_signature}, duo_go.SignatureSeparator)
 
 	valid_duo_configuration := &duo_go.Web{
 		Ikey: IKEY,
@@ -192,7 +192,7 @@ func TestFutureInvalidResponse(t *testing.T) {
 
 	username, err := duo_go.VerifyResponse(valid_duo_configuration, invalid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -206,14 +206,14 @@ func TestIncorrectParametersResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	valid_application_signature := parts[1]
 
-	invalid_response := strings.Join([]string{WRONG_PARAMS_RESPONSE, valid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	invalid_response := strings.Join([]string{WRONG_PARAMS_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(duo_configuration, invalid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -227,10 +227,10 @@ func TestInvalidIkeyResponse(t *testing.T) {
 
 	signature, err := duo_go.SignRequest(valid_duo_configuration, USER)
 
-	parts := strings.Split(signature, duo_go.SIGNATURE_SEPARATOR)
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
 	valid_application_signature := parts[1]
 
-	valid_response := strings.Join([]string{FUTURE_RESPONSE, valid_application_signature}, duo_go.SIGNATURE_SEPARATOR)
+	valid_response := strings.Join([]string{FUTURE_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	invalid_duo_configuration := &duo_go.Web{
 		Ikey: WRONG_IKEY,
@@ -240,7 +240,7 @@ func TestInvalidIkeyResponse(t *testing.T) {
 
 	username, err := duo_go.VerifyResponse(invalid_duo_configuration, valid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -252,11 +252,11 @@ func TestWrongApplicationParametersResponse(t *testing.T) {
 		Akey: AKEY,
 	}
 
-	invalid_response := strings.Join([]string{FUTURE_RESPONSE, WRONG_PARAMS_APP}, duo_go.SIGNATURE_SEPARATOR)
+	invalid_response := strings.Join([]string{FUTURE_RESPONSE, WRONG_PARAMS_APP}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(valid_duo_configuration, invalid_response)
 
-	if username != "" || err.Error() != duo_go.ERR_PARSE {
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
