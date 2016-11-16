@@ -30,9 +30,9 @@ const HTML_TEMPLATE = `
   <body>
     <form method="post" id="duo_form"></form>
     <iframe id="duo_iframe"
-        data-host="{{ .Host }}"
-        data-sig-request="{{ .SigRequest }}"
-        data-post-action="{{ .PostAction }}">
+            data-host="{{ .Host }}"
+            data-sig-request="{{ .SigRequest }}"
+            data-post-action="{{ .PostAction }}">
     </iframe>
     <script src="https://api.duosecurity.com/frame/hosted/Duo-Web-v2.min.js"></script>
   </body>
