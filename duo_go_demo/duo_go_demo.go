@@ -16,26 +16,26 @@ const RESPONSE_URL = "/response"
 
 const HTML_TEMPLATE = `
 <html>
-	<head>
-		<style>
-			#duo_iframe {
-				width: 100%;
-				min-width: 304px;
-				max-width: 620px;
-				height: 330px;
-				border: none;
-			}
-		</style>
-	</head>
-	<body>
-		<form method="post" id="duo_form"></form>
-		<iframe id="duo_iframe"
-				data-host="{{ .Host }}"
-				data-sig-request="{{ .SigRequest }}"
-				data-post-action="{{ .PostAction }}">
-		</iframe>
-		<script src="https://api.duosecurity.com/frame/hosted/Duo-Web-v2.min.js"></script>
-	</body>
+  <head>
+    <style>
+      #duo_iframe {
+        width: 100%;
+        min-width: 304px;
+        max-width: 620px;
+        height: 330px;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form method="post" id="duo_form"></form>
+    <iframe id="duo_iframe"
+        data-host="{{ .Host }}"
+        data-sig-request="{{ .SigRequest }}"
+        data-post-action="{{ .PostAction }}">
+    </iframe>
+    <script src="https://api.duosecurity.com/frame/hosted/Duo-Web-v2.min.js"></script>
+  </body>
 </html>
 `
 
