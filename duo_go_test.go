@@ -19,6 +19,7 @@ const (
 	INVALID_RESPONSE      = "AUTH|INVALID|SIG"
 	EXPIRED_RESPONSE      = "AUTH|dGVzdHVzZXJ8RElYWFhYWFhYWFhYWFhYWFhYWFh8MTMwMDE1Nzg3NA==|cb8f4d60ec7c261394cd5ee5a17e46ca7440d702"
 	FUTURE_RESPONSE       = "AUTH|dGVzdHVzZXJ8RElYWFhYWFhYWFhYWFhYWFhYWFh8MTYxNTcyNzI0Mw==|d20ad0d1e62d84b00a3e74ec201a5917e77b6aef"
+	PARTIAL_RESPONSE      = "AUTH|dGVzdHVzZXJ8RElYWFhYWFhYWFhYWFhYWFhYWFh8MTYxNTcyNzI0Mw=="
 	WRONG_PARAMS_RESPONSE = "AUTH|dGVzdHVzZXJ8RElYWFhYWFhYWFhYWFhYWFhYWFh8MTYxNTcyNzI0M3xpbnZhbGlkZXh0cmFkYXRh|6cdbec0fbfa0d3f335c76b0786a4a18eac6cdca7"
 	WRONG_PARAMS_APP      = "APP|dGVzdHVzZXJ8RElYWFhYWFhYWFhYWFhYWFhYWFh8MTYxNTcyNzI0M3xpbnZhbGlkZXh0cmFkYXRh|7c2065ea122d028b03ef0295a4b4c5521823b9b5"
 )
@@ -47,6 +48,20 @@ func TestEmptyUsername(t *testing.T) {
 	signature, err := duo_go.SignRequest(duo_configuration, "")
 
 	if signature != "" || err.Error() != duo_go.ErrUser {
+		t.Error("Failed error situation:", err)
+	}
+}
+
+func TestEmptyResponse(t *testing.T) {
+	duo_configuration := &duo_go.Web{
+		Ikey: IKEY,
+		Skey: SKEY,
+		Akey: AKEY,
+	}
+
+	username, err := duo_go.VerifyResponse(duo_configuration, "")
+
+	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
 	}
 }
@@ -122,6 +137,27 @@ func TestInvalidResponse(t *testing.T) {
 	invalid_response := strings.Join([]string{INVALID_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
 
 	username, err := duo_go.VerifyResponse(duo_configuration, invalid_response)
+
+	if username != "" || err.Error() != duo_go.ErrParse {
+		t.Error("Failed error situation:", err)
+	}
+}
+
+func TestPartialResponse(t *testing.T) {
+	duo_configuration := &duo_go.Web{
+		Ikey: IKEY,
+		Skey: SKEY,
+		Akey: AKEY,
+	}
+
+	signature, err := duo_go.SignRequest(duo_configuration, USER)
+
+	parts := strings.Split(signature, duo_go.SignatureSeparator)
+	valid_application_signature := parts[1]
+
+	partial_response := strings.Join([]string{PARTIAL_RESPONSE, valid_application_signature}, duo_go.SignatureSeparator)
+
+	username, err := duo_go.VerifyResponse(duo_configuration, partial_response)
 
 	if username != "" || err.Error() != duo_go.ErrParse {
 		t.Error("Failed error situation:", err)
