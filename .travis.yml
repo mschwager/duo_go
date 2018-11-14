@@ -2,6 +2,6 @@ language: go
 before_install:
     - go get github.com/mattn/goveralls
 script:
-    - go test -v ./...
+    - go test -race -v ./...
 after_success:
     - $HOME/gopath/bin/goveralls -service=travis-ci -ignore=duo_go_demo/duo_go_demo.go
